@@ -17,12 +17,21 @@
         android:visibility="gone"
         />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="51dp"
+        android:text="New Text"
+        android:id="@+id/textView9"
+        android:layout_gravity="center_horizontal|top" />
+
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="0dip"
         android:layout_weight="0.85"
         android:id="@+id/container"
-        />
+        >
+
+    </FrameLayout>
 
     <Button
         android:layout_width="fill_parent"
@@ -32,8 +41,7 @@
         android:textSize="20sp"
         android:id="@+id/refesh"
         android:textColor="#fff"
-        android:background="@drawable/large_button"
-        />
+        android:background="@drawable/large_button" />
 
 
 </LinearLayout>

@@ -28,11 +28,52 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
+import android.text.InputType;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+import org.json.JSONException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity {
     ProgressBar progress;
     Button refresh;
+    ArrayList<FlickrPhoto> photos;
+    private double latitude;
+    private double longitude;
+    LocationManager locationManager;
+    LocationListener locationListener;
+    String lat,lon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +84,13 @@ public class MainActivity extends ActionBarActivity {
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               startLoadTask(MainActivity.this);
+                startLoadTask(MainActivity.this);
             }
         });
+        getLocation();
         startLoadTask(this);
+
+
 
     }
 
@@ -91,6 +135,35 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void getLocation(){
+
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                Toast.makeText(MainActivity.this, "latitude: " + latitude + "longitude: " + longitude, Toast.LENGTH_LONG).show();
+                startLoadTask(MainActivity.this);
+                String[] str = new String[2];
+
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {}
+
+            @Override
+            public void onProviderEnabled(String s) {}
+
+            @Override
+            public void onProviderDisabled(String s) {}
+        };
+
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
+
+
+    }
+
     private class LoadPhotos extends AsyncTask<String, Long, Long> {
         HttpURLConnection connection = null;
         ArrayList<FlickrPhoto> photos;
@@ -106,14 +179,15 @@ public class MainActivity extends ActionBarActivity {
             super.onProgressUpdate(values);
         }
 
+
         @Override
         protected Long doInBackground(String... strings) {
-            String dataString = "https://api.flickr.com/services/rest/" +
-                    "?method=flickr.photos.search&api_key="+Constants.API_KEY+"&min_upload_date=04%2F25%2F2015&lat="+Constants.LATITUDE+"&lon=" +
-                    Constants.LONGITUDE+"&radius="+Constants.RADIUS+"&radius_units=km&format=json&nojsoncallback=1";
+            lon = String.valueOf(longitude);
+            lat = String.valueOf(latitude);
 
-//            String dataString = "https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api+key=" +
-//                   Constants.API_KEY + "&per_page=" + Constants.NUM_PHOTOS + "&format=json&nojsoncallback=1";
+            String dataString = "http://api.openweathermap.org/data/2.5/forecast/daily?lat="+lat+"&lon="+lon+"&cnt=10&mode=json";
+
+//            api.openweathermap.org/data/2.5/forecast/daily?lat=35&lon=139&cnt=10&mode=json.
             Log.i(Constants.TAG, dataString);
             try {
                 URL dataUrl = new URL(dataString);
@@ -133,9 +207,12 @@ public class MainActivity extends ActionBarActivity {
                     }
                     String photoData = sb.toString();
 
-                    photos = FlickrPhoto.makePhotoList(photoData);
-                    Log.d(Constants.TAG, photoData);
+                    photos = FlickrPhoto.makeDayList(photoData);
+                    Log.d("wtf", photoData);
 
+                    //String description = photos.get(1).getCity();
+                    //TextView title = (TextView) findViewById(R.id.textView9);
+                    //title.setText(description);
                     return 0l;
                 } else {
                     return 1l;
@@ -166,6 +243,15 @@ public class MainActivity extends ActionBarActivity {
                 dbHelper.addRows(photos);
                 dbHelper.close();
                 showList();
+                Log.i("nothing", "hello how are you doing");
+
+                String description = photos.get(3).getCity();
+                String country = photos.get(3).getCountry();
+
+                TextView title = (TextView) findViewById(R.id.textView9);
+
+                title.setText("City :  " + description +"   Country : "+ country);
+                Log.i("supposedly a city", (String)photos.get(3).getCity());
 
             } else {
                 Toast.makeText(getApplicationContext(), "AsyncTask didn't complete", Toast.LENGTH_LONG).show();

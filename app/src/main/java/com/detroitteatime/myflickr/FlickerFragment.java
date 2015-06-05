@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,35 +43,23 @@ public class FlickerFragment extends Fragment implements AdapterView.OnItemClick
 
         return view;
     }
-
-
+    //(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState, Cursor cursor
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         //Toast.makeText(getActivity(), mTitles[i], Toast.LENGTH_LONG).show();
-        cursor.moveToFirst();
-        cursor.move(i);
-        String id = cursor.getString(cursor.getColumnIndexOrThrow(Contract.PhotoEntry._ID));
-        String farm = cursor.getString(cursor.getColumnIndexOrThrow(Contract.PhotoEntry.FARM));
-        String server = cursor.getString(cursor.getColumnIndexOrThrow(Contract.PhotoEntry.SERVER));
-        String secret = cursor.getString(cursor.getColumnIndexOrThrow(Contract.PhotoEntry.SECRET));
-
+     //   cursor.moveToFirst();
+     //   cursor.move(i);
+     //   Log.d("TAG", "status " + i);
 
         // public static String getURL(String farm, String server, String id, String secret, boolean big)
-        String url = FlickrPhoto.getURL(farm, server, id, secret, true);
-        PhotoFragment pf = new PhotoFragment();
-        Bundle args = new Bundle();
-        args.putString("URL", url);
-        pf.setArguments(args);
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.container, pf);
-        ft.addToBackStack("Image");
-        ft.commit();
+      //  PhotoFragment pf = new PhotoFragment();
+      //  Bundle args = new Bundle();
+      //  pf.setArguments(args);
+      //  FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+     //   ft.replace(R.id.container, pf);
+        //ft.addToBackStack("Image");
+      //  ft.commit();
     }
 
-    /**
-     * Called when the Fragment is no longer started.  This is generally
-     * tied to {@link Activity#onStop() Activity.onStop} of the containing
-     * Activity's lifecycle.
-     */
 
 }

@@ -10,10 +10,13 @@ public class Constants {
     public static final String SECRET = "b1c8f0151a6c428c";
 //    public static final String LATITUDE = "34.0672280";
 //    public static final String LONGITUDE = "-118.1667410";
-    public static final String RADIUS = "1";
-
-    public static final String LATITUDE = "40.7127837";
-    public static final String LONGITUDE = "-74.00594130000002";
+    public static final String RADIUS = "2";
+        // compton my neighborhood lol(33.891401, -118.245302)
+    //just a picture of a condom on the top one lol.
+    // kevins hood lol (33.945870, -118.187925)
+    //(33.982264, -118.241225)
+    public static final String LATITUDE = "33.891401";
+    public static final String LONGITUDE = "-118.245302";
 
 
 

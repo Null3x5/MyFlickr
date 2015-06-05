@@ -17,28 +17,27 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     private String[] projection = {
             Contract.PhotoEntry._ID,
-            Contract.PhotoEntry.FAMILY,
-            Contract.PhotoEntry.FRIEND,
-            Contract.PhotoEntry.FARM,
-            Contract.PhotoEntry.TITLE,
-            Contract.PhotoEntry.SECRET,
-            Contract.PhotoEntry.OWNER,
-            Contract.PhotoEntry.PUBLIC,
-            Contract.PhotoEntry.SERVER,};
-
+            Contract.PhotoEntry.DAY,
+            Contract.PhotoEntry.MIN,
+            Contract.PhotoEntry.MAX,
+            Contract.PhotoEntry.MORN,
+            Contract.PhotoEntry.NIGHT,
+            Contract.PhotoEntry.EVE,
+            Contract.PhotoEntry.WTF,
+            Contract.PhotoEntry.DESCRIPTION,};
 
     private static final String DATABASE_CREATE =
             "CREATE TABLE " +
                     Contract.PhotoEntry.TABLE_NAME + " (" +
                     Contract.PhotoEntry._ID + " INTEGER PRIMARY KEY, " +
-                    Contract.PhotoEntry.OWNER + " TEXT NOT NULL, " +
-                    Contract.PhotoEntry.SECRET + " TEXT NOT NULL, " +
-                    Contract.PhotoEntry.SERVER + " TEXT NOT NULL, " +
-                    Contract.PhotoEntry.FARM + " TEXT NOT NULL, " +
-                    Contract.PhotoEntry.TITLE + " TEXT NOT NULL, " +
-                    Contract.PhotoEntry.PUBLIC + " INTEGER NOT NULL, " +
-                    Contract.PhotoEntry.FRIEND + " INTEGER NOT NULL, " +
-                    Contract.PhotoEntry.FAMILY + " INTEGER NOT NULL " + ")";
+                    Contract.PhotoEntry.DAY + " TEXT NOT NULL, " +
+                    Contract.PhotoEntry.MIN + " TEXT NOT NULL, " +
+                    Contract.PhotoEntry.MAX + " TEXT NOT NULL, " +
+                    Contract.PhotoEntry.MORN + " TEXT NOT NULL, " +
+                    Contract.PhotoEntry.NIGHT + " TEXT NOT NULL, " +
+                    Contract.PhotoEntry.EVE + " TEXT NOT NULL, " +
+                    Contract.PhotoEntry.WTF + " TEXT NOT NULL, " +
+                    Contract.PhotoEntry.DESCRIPTION + " TEXT NOT NULL " + ")";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + Contract.PhotoEntry.TABLE_NAME;
@@ -61,16 +60,17 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void insertPhotoEntry(FlickrPhoto photo) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
+//    private String id,day,min,max,night,eve,morn,wtf,description;
 
         cv.put(Contract.PhotoEntry._ID, photo.getId());
-        cv.put(Contract.PhotoEntry.OWNER, photo.getOwner());
-        cv.put(Contract.PhotoEntry.SECRET, photo.getSecret());
-        cv.put(Contract.PhotoEntry.SERVER, photo.getServer());
-        cv.put(Contract.PhotoEntry.FARM, photo.getFarm());
-        cv.put(Contract.PhotoEntry.TITLE, photo.getTitle());
-        cv.put(Contract.PhotoEntry.FAMILY, photo.getIsFamily() ? 1 : 0);
-        cv.put(Contract.PhotoEntry.PUBLIC, photo.getIsPublic() ? 1 : 0);
-        cv.put(Contract.PhotoEntry.FRIEND, photo.getIsFriend() ? 1 : 0);
+        cv.put(Contract.PhotoEntry.DAY, photo.getDay());
+        cv.put(Contract.PhotoEntry.MIN, photo.getMin());
+        cv.put(Contract.PhotoEntry.MAX, photo.getMax());
+        cv.put(Contract.PhotoEntry.MORN, photo.getMorn());
+        cv.put(Contract.PhotoEntry.NIGHT, photo.getNight());
+        cv.put(Contract.PhotoEntry.EVE, photo.getEve());
+        cv.put(Contract.PhotoEntry.WTF, photo.getWtf());
+        cv.put(Contract.PhotoEntry.DESCRIPTION, photo.getDescription());
 
         db.insert(Contract.PhotoEntry.TABLE_NAME, null, cv);
     }

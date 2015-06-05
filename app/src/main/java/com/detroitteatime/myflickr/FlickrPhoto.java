@@ -12,45 +12,58 @@ import java.util.ArrayList;
  * Created by mark on 4/30/15.
  */
 public class FlickrPhoto {
-    private String id, owner, secret, server, farm, title;
-    private Boolean isPublic, isFriend, isFamily;
+    private String id,day,min,max,night,eve,morn,wtf,description,city,country;
 
-    public FlickrPhoto(JSONObject jsonPhoto) throws JSONException {
-        this.id = (String) jsonPhoto.optString("id");
-        this.secret = (String) jsonPhoto.optString("secret");
-        this.owner = (String) jsonPhoto.optString("owner");
-        this.server = (String) jsonPhoto.optString("server");
-        this.farm = (String) jsonPhoto.optString("farm");
-        this.title = (String) jsonPhoto.optString("title");
-        this.isPublic = (Boolean) jsonPhoto.optBoolean("ispublic");
-        this.isFriend = (Boolean) jsonPhoto.optBoolean("isfriend");
-        this.isFamily = (Boolean) jsonPhoto.optBoolean("isfamily");
+    public FlickrPhoto(JSONObject jsonDay,JSONObject data) throws JSONException {
+
+        this.id = (String) jsonDay.optString("dt");
+
+        this.day = (String) jsonDay.getJSONObject("temp").getString("day");
+        this.min = (String) jsonDay.getJSONObject("temp").getString("min");
+        this.max = (String) jsonDay.getJSONObject("temp").getString("max");
+        this.night = (String) jsonDay.getJSONObject("temp").getString("night");
+        this.eve = (String) jsonDay.getJSONObject("temp").getString("eve");
+        this.morn = (String) jsonDay.getJSONObject("temp").getString("morn");
+
+
+        this.setCity((String) data.getJSONObject("city").getString("name"));
+        this.setCountry((String) data.getJSONObject("city").getString("country"));
+        Log.i("supposedly a city", city);
+        JSONArray arr = jsonDay.getJSONArray("weather");
+
+        for (int i = 0; i < arr.length(); i++)
+        {
+            this.wtf = arr.getJSONObject(i).getString("id");
+            this.description = arr.getJSONObject(i).getString("description");
+        }
+
     }
 
-    public static ArrayList<FlickrPhoto> makePhotoList(String photoData) throws JSONException {
+    //breaks the list
+    public static ArrayList<FlickrPhoto> makeDayList(String photoData) throws JSONException {
         ArrayList<FlickrPhoto> flickrPhotos = new ArrayList<>();
         JSONObject data = new JSONObject(photoData);
-        JSONObject photos = data.optJSONObject("photos");
-        JSONArray photoArray = photos.optJSONArray("photo");
+        JSONArray dayArray = data.optJSONArray("list");
 
-        for (int i = 0; i < photoArray.length(); i++) {
-            JSONObject photo = (JSONObject) photoArray.get(i);
-            FlickrPhoto currentPhoto = new FlickrPhoto(photo);
-            flickrPhotos.add(currentPhoto);
+
+        for (int i = 0; i < dayArray.length(); i++) {
+            JSONObject day = (JSONObject) dayArray.get(i);
+            FlickrPhoto currentDay = new FlickrPhoto(day,data);
+            flickrPhotos.add(currentDay);
         }
         return flickrPhotos;
     }
-
-    public static String getURL(String farm, String server, String id, String secret, boolean big) {
-        String opt = "n";
-        if (big) {
-            opt = "c";
-        }
-        String photoURI = "http://farm" + farm + ".staticflickr.com/" + server + "/"
-                + id + "_" + secret + "_" + opt + ".jpg";
-        Log.i(Constants.TAG, "Photo url: " + photoURI);
-        return photoURI;
+    public String getCountry() {
+        return country;
     }
+
+    public void setCountry(String country) { this.country = country; }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) { this.city = city; }
 
     public String getId() {
         return id;
@@ -60,80 +73,68 @@ public class FlickrPhoto {
         this.id = id;
     }
 
-    public String getOwner() {
-        return owner;
+    public String getDay() {
+        return day;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setDay(String owner) {
+        this.day = owner;
     }
 
-    public String getSecret() {
-        return secret;
+    public String getMin() {
+        return min;
     }
 
-    public void setSecret(String secret) {
-        this.secret = secret;
+    public void setMin(String secret) {
+        this.min = secret;
     }
 
-    public String getServer() {
-        return server;
+    public String getMax() {
+        return max;
     }
 
-    public void setServer(String server) {
-        this.server = server;
+    public void setMax(String server) {
+        this.max = server;
     }
 
-    public String getFarm() {
-        return farm;
+    public String getNight() {
+        return night;
     }
 
-    public void setFarm(String farm) {
-        this.farm = farm;
+    public void setNight(String farm) {
+        this.night = farm;
     }
 
-    public String getTitle() {
-        return title;
+    public String getEve() {
+        return eve;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setEve(String title) {
+        this.eve = title;
     }
 
-    public Boolean getIsPublic() {
-        return isPublic;
+    public String getMorn() {
+        return morn;
     }
 
-    public void setIsPublic(Boolean isPublic) {
-        this.isPublic = isPublic;
+    public void setMorn(String isPublic) {
+        this.morn = isPublic;
     }
 
-    public Boolean getIsFriend() {
-        return isFriend;
+    public String getWtf() {
+        return wtf;
     }
 
-    public void setIsFriend(Boolean isFriend) {
-        this.isFriend = isFriend;
+    public void setWtf(String isFriend) {
+        this.wtf = isFriend;
     }
 
-    public Boolean getIsFamily() {
-        return isFamily;
+    public String getDescription() {
+        return description;
     }
 
-    public void setIsFamily(Boolean isFamily) {
-        this.isFamily = isFamily;
+    public void setDescription(String isFamily) {
+        this.description = isFamily;
     }
-
-    public String getPhotoURL(Boolean big) {
-        String opt = "n";
-        if (big) {
-            opt = "c";
-        }
-        String photoURI = "http://farm" + this.farm + ".staticflickr.com/" + this.server + "/"
-                + this.id + "_" + this.secret + "_" + opt + ".jpg";
-        Log.i(Constants.TAG, "Photo url: " + photoURI);
-        return photoURI;
-    }
-
 
 }
